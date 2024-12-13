@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
 class User extends Authenticatable
 {
@@ -20,6 +22,21 @@ class User extends Authenticatable
         self::ROLE_EDITOR => 'Editor',
         self::ROLE_USER => 'User'
     ];
+
+    const ROLE_DEFAULT = self::ROLE_USER;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin() || $this->isEditor();
+    }
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+    public function isEditor()
+    {
+        return $this->role === self::ROLE_EDITOR;
+    }
 
     /**
      * The attributes that are mass assignable.
