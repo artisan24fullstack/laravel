@@ -26,35 +26,50 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-     {
-         $user = $request->user();
-         $request->validated();
+{
+    $user = $request->user();
+    $request->validated();
 
-         // Check if the email is being updated
-         if ($user->isDirty('email')) {
-             $user->email_verified_at = null;
-         }
+    // Check if the email is being updated
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
+    }
 
-         // Check if a new picture is being uploaded
-         if ($request->hasFile('picture')) {
-             // Define the path of the old picture
-             $oldPicturePath = $user->picture;
+    // Check if the user wants to remove the picture
+    if ($request->remove_picture == '1') {
+        // Define the path of the old picture
+        $oldPicturePath = $user->picture;
 
-             // Delete the old picture if it exists
-             if ($oldPicturePath && Storage::disk('public')->exists($oldPicturePath)) {
-                 Storage::disk('public')->delete($oldPicturePath);
-             }
+        // Delete the old picture if it exists
+        if ($oldPicturePath && Storage::disk('public')->exists($oldPicturePath)) {
+            Storage::disk('public')->delete($oldPicturePath);
+        }
 
-             // Store the new picture
-             $path = $request->file('picture')->store('pictures', 'public');
-             $user->picture = $path;
-         }
+        // Reset the picture path in the user model to the default avatar
+        $user->picture = '';
+    }
 
-         // Save the user data
-         $user->save();
+    // Check if a new picture is being uploaded
+    if ($request->hasFile('picture')) {
+        // Define the path of the old picture
+        $oldPicturePath = $user->picture;
 
-         return Redirect::route('profile.edit')->with('status', 'profile-updated');
-     }
+        // Delete the old picture if it exists
+        if ($oldPicturePath && Storage::disk('public')->exists($oldPicturePath)) {
+            Storage::disk('public')->delete($oldPicturePath);
+        }
+
+        // Store the new picture
+        $path = $request->file('picture')->store('pictures', 'public');
+        $user->picture = $path;
+    }
+
+    // Save the user data
+    $user->save();
+
+    return Redirect::route('profile.edit')->with('status', 'profile-updated');
+}
+
 
     /**
      * Delete the user's account.
