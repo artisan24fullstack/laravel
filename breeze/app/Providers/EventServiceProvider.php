@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use App\Events\UserLoggedInEvent;
-use App\Listeners\UpdateLastLoginListener;
 use Illuminate\Support\ServiceProvider;
+use App\Listeners\UpdateLastLoginListener;
+use App\Listeners\UpdateLoginCountListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -12,6 +13,8 @@ class EventServiceProvider extends ServiceProvider
 
         UserLoggedInEvent::class => [
             UpdateLastLoginListener::class,
+            UpdateLoginCountListener::class,
+
         ],
 
     ];

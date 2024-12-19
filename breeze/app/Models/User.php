@@ -51,6 +51,7 @@ class User extends Authenticatable
         'picture',
         'last_login',
         //'registered',
+        'login_count'
 
     ];
 
@@ -76,6 +77,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'last_login' => 'datetime',
             //'registered' => 'boolean',
+            'login_count' => 'integer',
         ];
     }
 
