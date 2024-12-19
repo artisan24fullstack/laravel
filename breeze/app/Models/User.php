@@ -48,7 +48,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'picture'
+        'picture',
+        'last_login',
+        //'registered',
+
     ];
 
     /**
@@ -71,6 +74,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_login' => 'datetime',
+            //'registered' => 'boolean',
         ];
+    }
+
+    public function setLastLogin(): bool
+    {
+        return $this->update(['last_login' => now()]);
     }
 }
